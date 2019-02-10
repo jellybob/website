@@ -73,7 +73,7 @@ def choose_role():
 
         db.session.commit()
         flash("Your role list has been updated", 'info')
-        return redirect(url_for('.choose_role'))
+        return redirect(url_for('.schedule'))
 
     current_roles = current_volunteer.interested_roles.all()
     if current_roles:
@@ -89,9 +89,10 @@ def choose_role():
 def role(role_id):
     role = Role.query.get_or_404(role_id)
     current_volunteer = VolunteerUser.get_for_user(current_user)
+    signed_up_for_role = current_volunteer.interested_roles.filter_by(id = role_id).first()
 
     if request.method == "POST":
-        if role_id in current_volunteer.interested_roles:
+        if signed_up_for_role:
             current_volunteer.interested_roles.remove(role)
         else:
             current_volunteer.interested_roles.append(role)
@@ -108,5 +109,6 @@ def role(role_id):
         description = None
 
     return render_template('volunteer/role.html', description=description,
-                           role=role, current_volunteer=current_volunteer)
+                           role=role, current_volunteer=current_volunteer,
+                           signed_up_for_role=signed_up_for_role)
 

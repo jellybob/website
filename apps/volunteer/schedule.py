@@ -38,6 +38,9 @@ def _get_interested_roles(user):
 @feature_flag('VOLUNTEERS_SCHEDULE')
 @v_user_required
 def schedule():
+    if not current_user.has_permission('volunteer:user'):
+        return redirect(url_for('.sign-up'))
+
     shifts = Shift.get_all()
     by_time = defaultdict(lambda: defaultdict(list))
 

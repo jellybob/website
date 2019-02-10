@@ -60,6 +60,7 @@
         </div>
     </noscript>
 
+    <p>Listed below are 
     {% if untrained_roles %}
     <div class="alert alert-info">
     You still need training before starting a shift for the following roles:
@@ -171,7 +172,9 @@
         $('#tabnav-sat a').attr('href', '#sat');
         $('#tabnav-sun a').attr('href', '#sun');
         $('#tabnav-mon a').attr('href', '#mon');
+        $('#show_signed_up_only').attr('checked', true);
         $('#is_interested').attr('checked', true);
+        $('#hide_full').attr('checked', true);
 
         var volunteer_shifts = {{ all_shifts | tojson }},
             volunteer_roles = {{ roles | tojson }},

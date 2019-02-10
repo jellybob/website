@@ -32,7 +32,11 @@
             <input id="csrf_token" name=_csrf_token type=hidden value="{{ csrf_token() }}">
 
             <button class="btn btn-primary debounce">
-                Sign up for this role
+                {% if signed_up_for_role %}
+                    I'm no longer interested in this role
+                {% else %}
+                    Sign up for this role
+                {% endif %}
             </button>
         </form>
     {% endif %}

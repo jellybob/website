@@ -14,10 +14,9 @@ function init_volunteer_schedule(data, all_roles, active_day, is_admin) {
                 rows = [];
 
             $.each(hours_shifts, function(index, shift) {
-                if (fails_filters(filters, shift)) {
-                    return;
+                if (matches_filters(filters, shift)) {
+                    rows.push(make_row(shift));
                 }
-                rows.push(make_row(shift));
             });
 
             if (rows.length > 0) {
@@ -240,24 +239,29 @@ function init_volunteer_schedule(data, all_roles, active_day, is_admin) {
         render();
     }
 
-    function fails_filters(filters, shift) {
-        if (filters.role_ids.length > 0 && !is_in(filters.role_ids, shift.role_id)) {
-            return true;
-        }
-
+    function matches_filters(filters, shift) {
+        // Filter out all past shifts, even if signed up for.
         if (!filters.show_past && new Date(shift.end) < new Date()) {
+            return false;
+        }
+
+        // Ensure users always see their signed up events, unless they're
+        // in the past.
+        if (filters.show_signed_up_only && shift.is_user_shift) {
             return true;
         }
 
-        if (filters.show_signed_up_only && !shift.is_user_shift) {
-            return true;
-        }
-
+        // Full shifts that the user hasn't signed up for should always be
+        // hidden.
         if (filters.hide_full && shift.current_count == shift.max_needed) {
+            return false;
+        }
+
+        if (filters.role_ids.length > 0 && is_in(filters.role_ids, shift.role_id)) {
             return true;
         }
 
-        if (filters.understaffed_only && shift.current_count >= shift.min_needed) {
+        if (filters.understaffed_only && shift.current_count < shift.min_needed) {
             return true;
         }
 

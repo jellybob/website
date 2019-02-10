@@ -2,12 +2,15 @@
 from flask import redirect, url_for, render_template
 
 from . import volunteer
-from ..common import feature_flag
+from ..common import feature_flag, feature_enabled
 
 @volunteer.route('/')
 @feature_flag('VOLUNTEERS_SIGNUP')
 def main():
-    return redirect(url_for('.sign_up'))
+    if feature_enabled("VOLUNTEERS_SCHEDULE"):
+        return redirect(url_for('.schedule'))
+    else:
+        return redirect(url_for('.sign_up'))
 
 @volunteer.route('/safeguarding')
 @feature_flag('VOLUNTEERS_SIGNUP')

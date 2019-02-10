@@ -73,7 +73,7 @@ def choose_role():
 
         db.session.commit()
         flash("Your role list has been updated", 'info')
-        return redirect(url_for('.choose_role'))
+        return redirect(url_for('.schedule'))
 
     current_roles = current_volunteer.interested_roles.all()
     if current_roles:
